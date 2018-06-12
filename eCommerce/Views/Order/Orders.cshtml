@@ -1,0 +1,303 @@
+﻿@using DataLayer.DataLayer
+@model DLAddresses
+
+@{
+    ViewBag.Title = "Orders";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+<div class="container">
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <td colspan="2">
+                    <button id="AddressBtn" class="btn btn-primary btn-lg" type="button">Billing Address</button>
+                    <button id="OrderSummaryBtn" class="btn btn-primary btn-lg" type="button">Order Summary</button>
+                    <button id="TotalOrderListBtn" class="btn btn-primary btn-lg" type="button">Order List</button>
+                    <a id="CheckoutBtn" class="btn btn-primary btn-lg" href="/Order/Checkout" style="display:none;">CheckOut</a>
+                </td>
+            </tr>
+            <tr>
+                @{
+                    if (Model != null)
+                    {
+                        <script>
+                            $('#CheckoutBtn').show();
+                        </script>
+                        <td colspan="1" id="AddressExist">
+                            <fieldset>
+                                <div class="well form-horizontal">
+                                    <h2>Billing Address</h2>
+                                    <hr />
+
+                                    <b>Full Name:</b> @Model.FullName
+                                    <button id="AddressEdit" onclick="getbyID()" type="button">Edit</button>
+                                    <br />
+                                    <b>Mobile:</b>@Model.Mobile
+                                    <br />
+                                    <b>Pin Code:</b>@Model.PinCode
+                                    <br />
+                                    <b>Address:</b>@Model.Address
+
+                                </div>
+                            </fieldset>
+                        </td>
+                    }
+                }
+                <td colspan="1" id="AddressForm">
+                    @using (Html.BeginForm("Address", "Order", FormMethod.Post, new { @class = "well form-horizontal" }))
+                    {
+                        <fieldset>
+                            <h2>Billing Address</h2>
+                            <hr />
+                            <input type="hidden" name="AddressId" value="AddressId" id="AddressId" />
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Full Name</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                        @Html.EditorFor(m => m.FullName, "", new { htmlAttributes = new { @class = "form-control", @Value = Session["LoginCustomer"], @placeholder = "Full Name", maxlength = "15" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Mobile</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+                                        @Html.EditorFor(m => m.Mobile, "", new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile", maxlength = "10" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Postal Code/ZIP</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+                                        @Html.EditorFor(m => m.PinCode, "", new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal Code/ZIP", maxlength = "6", @type = "text" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Address</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+                                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = "3", @style = "resize: none;", @placeholder = "Address", maxlength = "500" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Country</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="max-width: 100%;"><i class="glyphicon glyphicon-list"></i></span>
+                                        @Html.DropDownListFor(m => m.CountryId, (IEnumerable<SelectListItem>)ViewBag.Countries, "Select Country", new { @class = "selectpicker form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">State</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="max-width: 100%;"><i class="glyphicon glyphicon-list"></i></span>
+                                        @Html.DropDownListFor(m => m.StateId, (IEnumerable<SelectListItem>)ViewBag.States, "Select State", new { @class = "selectpicker form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">City</label>
+                                <div class="col-md-8 inputGroupContainer">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="max-width: 100%;"><i class="glyphicon glyphicon-list"></i></span>
+                                        @Html.DropDownListFor(m => m.CityId, (IEnumerable<SelectListItem>)ViewBag.Cities, "Select City", new { @class = "selectpicker form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Address Type</label>
+                                <div class="col-md-8 inputGroupContainer" id="AddressTypemsg">
+                                    <label class="custom-control custom-radio">
+                                        @Html.RadioButtonFor(m => m.AddressType, "Home", new { @class = "custom-control-input" })  Home
+
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        @Html.RadioButtonFor(m => m.AddressType, "Work", new { @class = "custom-control-input" })  Work
+                                        <span class="custom-control-indicator"> (10am-5pm delivery)</span>
+
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default" onclick="return Validate();" id="Save" name="Save" value="Save">Add Address</button>
+                                <button type="submit" class="btn btn-default" onclick="return Validate();" id="Edit" name="Edit" value="Edit" style="display:none;">Edit Address</button>
+                                <button type="reset" class="btn btn-danger">Reset</button>
+                            </div>
+
+                        </fieldset>
+                    }
+                </td>
+                <td colspan="1" id="OrderSummary">
+                    <form class="well form-horizontal">
+                        <fieldset>
+                            <h2>Orders Summary</h2>
+                            <hr />
+                            @{
+                                decimal dtot = 0;
+                            }
+                            <div class="form-group">
+                                <label class="col-md-1">Image</label>
+                                <label class="col-md-1">Name</label>
+                                <label class="col-md-4">Description</label>
+                                <label class="col-md-1">Price</label>
+                                <label class="col-md-1">Quantity</label>
+                                <label class="col-md-2">Place Order Date</label>
+                            </div>
+                            @foreach (var objItem in ViewBag.OrderList)
+                            {
+                                dtot += objItem.Price * objItem.TotalQty;
+
+                                <div class="form-group">
+                                    <label class="col-md-1">
+                                        @foreach (var image in objItem.Image)
+                                        {
+                                            if (image.Filename != null)
+                                            {
+                                                <img src="~/Content/Images/Products/@image.Filename" width="50" height="50" />
+                                                break;
+                                            }
+                                        }
+                                    </label>
+                                    <label class="col-md-1">@objItem.Name</label>
+                                    <label class="col-md-4">@objItem.Description</label>
+                                    <label class="col-md-1">₹@objItem.Price</label>
+                                    <label class="col-md-1">@objItem.TotalQty</label>
+                                    <label class="col-md-2">@objItem.CreatedDate</label>
+                                </div>
+                            }
+                            <b>Total Amount ₹@dtot</b>
+                        </fieldset>
+                    </form>
+                </td>
+                <td colspan="1" id="TotalOrderList">
+                    <form class="well form-horizontal">
+                        <fieldset>
+                            <h2>Orders List</h2>
+                            <hr />
+
+                            <div class="form-group">
+                                <label class="col-md-1">Order Number</label>
+                                <label class="col-md-1">Image</label>
+                                <label class="col-md-1">Name</label>
+                                <label class="col-md-4">Description</label>
+                                <label class="col-md-1">Price</label>
+                                <label class="col-md-1">Quantity</label>
+                                <label class="col-md-2">Place Order Date</label>
+                            </div>
+                            @foreach (var objItem in ViewBag.TotalOrderList)
+                            {
+                                decimal total = 0;
+
+                                <label class="col-md-1">@objItem.OrderCartItemId</label>
+
+                                total += objItem.Price * objItem.TotalQty;
+
+                                <div class="form-group">
+                                    <label class="col-md-1">
+                                        @foreach (var image in objItem.Image)
+                                        {
+                                            if (image.Filename != null)
+                                            {
+                                                <img src="~/Content/Images/Products/@image.Filename" width="50" height="50" />
+                                                break;
+                                            }
+                                        }
+                                    </label>
+                                    <label class="col-md-1">@objItem.Name</label>
+                                    <label class="col-md-4">@objItem.Description</label>
+                                    <label class="col-md-1">₹@total</label>
+                                    <label class="col-md-1">@objItem.TotalQty</label>
+                                    <label class="col-md-2">@objItem.CreatedDate</label>
+                                </div>
+                            }
+
+
+                        </fieldset>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/Order.js"></script>
+@{
+    if (Model != null)
+    {
+        //Update Address
+        <script>
+            $('#Save').hide();
+            $('#Edit').show();
+            $(document).ready(function () {
+                $('#OrderSummary').hide();
+                $('#AddressForm').hide();
+                $('#AddressExist').show();
+                $('#TotalOrderList').hide();
+                $('#AddressEdit').click(function () {
+                    $('#AddressForm').toggle();
+                    $('#OrderSummary').hide();
+                    $('#TotalOrderList').hide();
+                });
+                $('#AddressBtn').click(function () {
+                    $('#AddressForm').hide();
+                    $('#OrderSummary').hide();
+                    $('#AddressExist').show();
+                    $('#TotalOrderList').hide();
+                });
+                $('#OrderSummaryBtn').click(function () {
+                    $('#AddressExist').hide();
+                    $('#AddressForm').hide();
+                    $('#OrderSummary').show();
+                    $('#TotalOrderList').hide();
+                });
+                $('#TotalOrderListBtn').click(function () {
+                    $('#TotalOrderList').show();
+                    $('#AddressExist').hide();
+                    $('#AddressForm').hide();
+                    $('#OrderSummary').hide();
+                });
+            });
+        </script>
+    }
+    else
+    {    //Add address
+        <script>
+            $('#Save').show();
+            $('#Edit').hide();
+            $(document).ready(function () {
+                $('#OrderSummary').hide();
+                $('#AddressForm').show();
+                $('#TotalOrderList').hide();
+                $('#AddressBtn').click(function () {
+                    $('#AddressForm').show();
+                    $('#OrderSummary').hide();
+                    $('#TotalOrderList').hide();
+                });
+                $('#OrderSummaryBtn').click(function () {
+                    $('#AddressForm').hide();
+                    $('#TotalOrderList').hide();
+                    $('#OrderSummary').show();
+                });
+                $('#AddressEdit').click(function () {
+                    $('#AddressForm').toggle();
+                    $('#TotalOrderList').hide();
+                });
+                $('#TotalOrde*rListBtn').click(function () {
+                    $('#TotalOrderList').show();
+                    $('#AddressExist').hide();
+                    $('#AddressForm').hide();
+                    $('#OrderSummary').hide();
+                });
+            });
+        </script>
+    }
+}
+<script src="~/Scripts/DropDown.js"></script>

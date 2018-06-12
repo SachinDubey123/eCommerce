@@ -1,0 +1,25 @@
+﻿<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>eCommerce | @ViewBag.Title</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    @Scripts.Render("~/Scripts/Sweet.js")
+    @Styles.Render("~/Content/Sweet.css")
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/Admincss")
+</head>
+<body class="hold-transition login-page">
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            swal("@TempData["Error"]");
+        </script>
+    }
+    @RenderBody()
+
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/bundles/Adminjs")
+</body>
+</html>

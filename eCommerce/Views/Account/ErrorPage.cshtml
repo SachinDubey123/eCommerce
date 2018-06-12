@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+@if (ViewBag.Message != null)
+{
+    <div class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" id="close" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="color:red">@ViewBag.Message</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+       $(document).ready(function () {
+           $("#myModal").modal();
+           if ($('#myModal').hasClass('in')) { //Check if the modal is already showing
+               //setTimeout(function () { $('#myModal').modal('hide') }, 3000);
+               $('#close').click(function () {
+                    window.location.href='@ViewBag.Address';
+                });
+           };
+       });
+</script>
+

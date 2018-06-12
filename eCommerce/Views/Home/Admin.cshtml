@@ -1,0 +1,114 @@
+﻿@using DataLayer.DataLayer
+@model DLAdmin
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@Styles.Render("~/Content/DataTablecss")
+@Scripts.Render("~/bundles/DataTablejs")
+
+ <!--==============================Register/Update=================================-->
+<div class="container">
+    <button id="RegisterBtn" class="btn btn-info btn-lg">
+        <span class="glyphicon glyphicon-plus">+</span>
+    </button>
+
+    <div class="modal fade" id="RegisterModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                 <div class="modal-body" style="padding:40px 50px;">
+                    <center>
+                        <span class="btn btn-primary btn-lg btn-block">Registration</span>
+                        <br />
+                        @using (Html.BeginForm("Admin", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                        <input type="hidden" id="AdminId"name="AdminId" value="AdminId"/>
+                            <table align="center">
+                                <tr>
+                                    <td>@Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control", placeholder = "First Name" } }) </td>
+                                    <td>@Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger  " })</td>
+                                    <td>@Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control", placeholder = "Last Name" } })</td>
+                                    <td>@Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger  " })</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">@Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", placeholder = "User Name" } }) </td>
+                                    <td>@Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger  " }) </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">@Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Email Id" } }) </td>
+                                    <td>@Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger  " }) </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">@Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Password" }) </td>
+                                    <td>@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger  " })</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" id="radiomsg">
+                                        @Html.RadioButtonFor(m => m.Gender, "Male")  Male
+                                        @Html.RadioButtonFor(m => m.Gender, "Female")  Female
+                                    </td>
+                                    <td>@Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger  " })</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">@Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control", placeholder = "Mobile Number" } }) </td>
+                                    <td>@Html.ValidationMessageFor(model => model.Mobile, "", new { @class = "text-danger  " })</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">
+                                        @Html.DropDownListFor(model => model.Role, new SelectList(Enum.GetValues(typeof(DataLayer.RoleEnum))), "Choose Role", new { @class = "form-control" })
+                                    </td>
+                                    <td>@Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger  " })</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">@Html.EditorFor(model => model.Photo, new { htmlAttributes = new { @class = "form-control", @type = "file", title = "Choose Photo" } })</td>
+                                    <td>@Html.ValidationMessageFor(model => model.Photo, "", new { @class = "text-danger  " })</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <center>
+                                            <button type="submit" value="Save" name="save" id="save" onclick="return Validate();" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-user"></span> Register</button>
+                                            <span class="input-group-addon">  </span>
+                                            <button type="submit" value="Edit" name="edit" id="edit" onclick="return Validate();" style="display:none;" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-user"></span> Update</button>
+                                            <span class="input-group-addon">  </span>
+                                            <button type="reset" id="reset" name="reset" class="btn btn-primary btn-lg"> <span class="glyphicon glyphicon-user"></span> Clear</button>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br />
+                                @Html.ValidationSummary(true, "* Mandatory Fields", new { style = "color:red" })
+
+                        }
+                    </center>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#RegisterBtn").click(function () {
+        $("#RegisterModal").modal();
+    });
+</script>
+<!--==============================End Register/Update=================================-->
+<table id="AdminTable">
+    <thead>
+        <tr>
+            <th>Photo</th>
+            <th>Username </th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<script src="~/Content/Admin.js"></script>
+

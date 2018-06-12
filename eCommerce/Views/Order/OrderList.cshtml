@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "OrderList";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container">
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <td colspan="1">
+                    <form class="well form-horizontal">
+                        <fieldset>
+                            <h2>Orders List</h2>
+                            <hr />
+
+                            <div class="form-group">
+                                <label class="col-md-1">Order Number</label>
+                                <label class="col-md-1">Image</label>
+                                <label class="col-md-2">Name</label>
+                                <label class="col-md-2">Description</label>
+                                <label class="col-md-1">Price</label>
+                                <label class="col-md-1">Quantity</label>
+                                <label class="col-md-2">Place Order Date</label>
+                            </div>
+                            @foreach (var objItem in ViewBag.TotalOrderList)
+                            {
+                                <label class="col-md-1">@objItem.OrderCartItemId</label>
+                                decimal dtot = 0;
+                                dtot += objItem.Price * objItem.TotalQty;
+
+                                <div class="form-group">
+                                    <label class="col-md-1">
+                                        @foreach (var image in objItem.Image)
+                                        {
+                                            if (image.Filename != null)
+                                            {
+                                                <img src="~/Content/Images/Products/@image.Filename" width="50" height="50" />
+                                                break;
+                                            }
+                                        }
+                                    </label>
+                                    <label class="col-md-2">@objItem.Name</label>
+                                    <label class="col-md-2">@objItem.Description</label>
+                                    <label class="col-md-1">₹@dtot</label>
+                                    <label class="col-md-1">@objItem.TotalQty</label>
+                                    <label class="col-md-2">@objItem.CreatedDate</label>
+                                </div>
+                            }
+
+
+                        </fieldset>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+

@@ -1,0 +1,13 @@
+﻿
+@{
+    Layout = null;
+}
+
+@Styles.Render("~/Content/Customercss")
+
+@model System.Web.Mvc.HandleErrorInfo
+<br />
+    <h1 class="text-danger">Something happen wrong!!</h1>
+@*@Model.Exception.Message*@
+<h2 class="text-danger">An error handle while processing while your request</h2>
+<br /><br />

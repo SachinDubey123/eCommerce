@@ -1,0 +1,84 @@
+﻿@using DataLayer.DataLayer
+@model IEnumerable<Images>
+
+@{
+    ViewBag.Title = "Images";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h2>Images</h2>
+<a href="/Product/Products" class="btn btn-info btn-lg">
+    <span class="glyphicon glyphicon-arrow-left"></span>
+</a>
+<h2>Images</h2>
+@foreach (var image in Model)
+            {
+    <img src="/Content/Images/Products/@image.Filename" style="height:200px;width:200px;" />
+                <button type="submit" id="Edit" name="Edit" value="@image.ImageId"><span class="glyphicon glyphicon-pencil"></span></button>
+                <button type="submit" id="Delete" name="Delete" value="@image.ImageId"><span class="glyphicon glyphicon-trash"></span></button>
+}
+<br />
+<br />
+<div id="EditImage"> <input type='file' id='fileImage' name='fileImage' /></div>
+<br /><br />
+<script>
+    $(document).ready(function () {
+        var Imageid = 0;
+        $("#EditImage").hide();
+        $('button[type="submit"]').click(function () {
+            if (this.id == "Edit" )
+            {
+                Imageid=$(this).attr('value');
+                $("#EditImage").show();
+            }
+        });
+
+        $('input[type="file"]').change(function () {
+            if (this.id == "fileImage") {
+      //          alert(Imageid);
+                var data = new FormData();
+                var files = $("#fileImage").get(0).files;
+                if (files.length > 0) {
+                    data.append("file", files[0]);
+                }
+                data.append("imageId", Imageid);
+                $.ajax({
+                    url: '@Url.Action("EditImage","Product")',
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    data: data,
+                    success: function (response) {
+                        location.reload();
+                    },
+                    error: function (er) {
+                        location.reload();
+                    }
+                });
+            }
+        });
+        $('button[type="submit"]').click(function () {
+            if (this.id == "Delete") {
+                Imageid = $(this).attr('value');
+
+                    var ans = confirm("Are you sure you want to delete this Record?");
+                    if (ans) {
+                        $.ajax({
+                            url: "/Product/DeleteImage/" + Imageid,
+                            type: "POST",
+                            contentType: "application/json;charset=UTF-8",
+                            dataType: "json",
+                        success: function (response) {
+                            location.reload();
+                        },
+                        error: function (er) {
+                            location.reload();
+                        }
+                        });
+                    }
+
+            }
+        });
+
+
+    });
+</script>

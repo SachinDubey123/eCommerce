@@ -1,0 +1,93 @@
+﻿@Styles.Render("~/Content/Customercss")
+@Scripts.Render("~/bundles/Customerjs")
+@Scripts.Render("~/Scripts/Sweet.js")
+@Styles.Render("~/Content/Sweet.css")
+
+@if (TempData["Error"] != null)
+{
+    <script>
+            swal("@TempData["Error"]");
+    </script>
+}
+@model IEnumerable<DataLayer.DataLayer.DLProducts>
+
+@{
+    decimal dtot = 0;
+}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">
+                Your cart
+            </h4>
+        </div>
+        <div class="modal-body">
+            <table id="cartList" cellpadding="5" cellspacing="5">
+                <thead>
+                    <tr>
+                        <td><b>Image</b></td>
+                        <td><b>Name</b></td>
+                        <td><b>Price</b></td>
+                        <td><b>Quantity&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                        <td><b>Remove</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var objItem in Model)
+                    {
+                        dtot += objItem.Price * objItem.TotalQty;
+                        <tr id="@objItem.ProductId">
+                            <td>
+                                @foreach (var image in objItem.Image)
+                                {
+                                    if (image.Filename != null)
+                                    {
+                                        <img src="~/Content/Images/Products/@image.Filename" width="50" height="50" />
+                                        break;
+                                    }
+                                }
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td>
+                                @objItem.Name
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td>
+                                ₹ @objItem.Price
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td>
+                                <input type="number" min="1" style="width:50px;" name="@objItem.CartItemId" id="Qty" value="@objItem.TotalQty" onkeypress="return isNumberKey(event)" />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td>
+                                <span id="cartDel" class="glyphicon glyphicon-remove"></span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <span class="totalPrice">Total Amount ₹@dtot</span>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default">
+                <a href="/Clothes/Clothes">Continue Shopping</a>
+            </button>
+            <button type="button" class="btn btn-primary">
+                <a style="color:white!important" href="/Order/Orders">Place Order</a>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31
+              && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        }
+    </script>
+</div>
